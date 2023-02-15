@@ -9,8 +9,8 @@ Router.delete('/', contacts.deleteAll);
 
 Router.get('/favorite', contacts.findAllFavorite);
 
-Router.get('/:id', contacts.findOne);
 Router.put('/:id', contacts.update);
+Router.get('/:id', contacts.findOne);
 Router.delete('/:id', contacts.delete);
 
 export default Router;

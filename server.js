@@ -4,7 +4,7 @@ import morgan from 'morgan';
 import config from './App/Config/index.js';
 import routes from './App/Routes/index.js';
 import ApiError from './App/api-error.js';
-
+import Mongodb from './App/Utils/mongodb.utils.js';
 const app = express();
 
 // Setup
@@ -13,15 +13,6 @@ app.use(morgan('tiny'));
 app.use(express.json({ extended: true }));
 app.use(express.urlencoded({ extended: true }));
 app.use('/api', routes);
-
-//app.use('/', (req, res) => {
-//    res.json({ message: 'Welcome to contact book' });
-//});
-
-// Running server
-app.listen(config.PORT, () => {
-    console.log(`Server is running on port ${config.PORT}`);
-});
 
 // Handle error
 app.use((req, res, next) => {
@@ -33,3 +24,21 @@ app.use((err, req, res, next) => {
         message: err.message || 'Internal Server Error',
     });
 });
+
+async function startServer() {
+    try {
+        //Connect database
+        await Mongodb.connect(config.db.uri);
+        console.log('Connected to the database');
+
+        // Running server
+        app.listen(config.PORT, () => {
+            console.log(`Server is running on port ${config.PORT}`);
+        });
+    } catch (error) {
+        console.log('Cannot connect  to the database !', error);
+        process.exit();
+    }
+}
+
+startServer();
